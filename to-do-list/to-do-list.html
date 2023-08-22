@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .App {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #eb92db;
+        }
+
+        .input-container {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #aa55a3;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        li span {
+            flex: 1;
+            font-size: 18px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        button.delete-btn {
+            background-color: #ff4500;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button.delete-btn:hover {
+            background-color: #cc3700;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        class TodoList extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    todos: [], // 할 일 목록을 저장하는 배열
+                    inputValue: '' // 사용자가 입력한 값을 추적하는 문자열 
+                };
+            }
+    
+            handleInputChange = (event) => {
+                this.setState({ inputValue: event.target.value }); // 입력 필드 값 변경 시, InputValue 상태 업데이트 
+            }
+    
+            addTodo = () => {
+                if (this.state.inputValue.trim() !== '') { // 입력값이 비어있지 않으면,
+                    this.setState({
+                        todos: [...this.state.todos, { text: this.state.inputValue, completed: false }], // 새 할 일 추가 
+                        inputValue: '' // 입력 필드 초기화 
+                    });
+                }
+            }
+    
+            toggleTodo = (index) => {
+                const updatedTodos = [...this.state.todos];
+                updatedTodos[index].completed = !updatedTodos[index].completed; // 체크박스 클릭으로 완료 상태 토글
+                this.setState({ todos: updatedTodos });
+            }
+    
+            deleteTodo = (index) => {
+                const updatedTodos = [...this.state.todos];
+                updatedTodos.splice(index, 1); // 할 일 삭제 
+                this.setState({ todos: updatedTodos });
+            }
+    
+            render() {
+                return (
+                    <div>
+                        <h1>To-Do-List</h1>
+                        <div>
+                            <input
+                                type="text"
+                                placeholder="to-do-list"
+                                value={this.state.inputValue}
+                                onChange={this.handleInputChange}
+                            />
+                            <button onClick={this.addTodo}>Add</button>
+                        </div>
+                        <ul>
+                            {this.state.todos.map((todo, index) => (
+                                <li key={index}>
+                                    <input
+                                        type="checkbox"
+                                        checked={todo.completed}
+                                        onChange={() => this.toggleTodo(index)} // 체크박스 클릭으로 완료 상태 토글 
+                                    />
+                                    <span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
+                                        {todo.text} {/* 완료된 항목은 취소선으로 표시 */}
+                                    </span>
+                                    <button onClick={() => this.deleteTodo(index)}>Delete</button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                );
+            }
+        }
+    
+        ReactDOM.render(
+            <TodoList/>,
+            document.getElementById('root')
+        );
+    </script>
+    
+    
+</body>
+</html>
